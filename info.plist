@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.crimsonskiff.converttext</string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4EE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>F028C3B2-BAE6-4323-A0F9-4DB2B170C932</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>James Prior</string>
+	<key>description</key>
+	<string>Convert text to handy web dev formats.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Convert text</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>enc</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Converting</string>
+				<key>script</key>
+				<string>require 'json'
+require 'cgi'
+require 'base64'
+
+query = "{query}".force_encoding(Encoding::UTF_8)
+
+def uri_escape(query)
+  enc = CGI::escape(query)
+  {
+    uid: 'uri-escape',
+    title: enc,
+    subtitle: 'uri escaped',
+    arg: enc,
+  }
+end
+
+def uri_unescape(query)
+  plain = CGI::unescape(query)
+  {
+    uid: 'uri-unescape',
+    title: plain,
+    subtitle: 'uri unescaped',
+    arg: plain,
+  }
+end
+
+def base64_encode(query)
+  enc = Base64.encode64(query)
+  {
+    uid: 'base64-encoded',
+    title: enc,
+    subtitle: 'base64 encoded',
+    arg: enc,
+  }
+end
+
+def base64_decode(query)
+  plain = Base64.decode64(query)
+  {
+    uid: 'base64-decoded',
+    title: plain,
+    subtitle: 'base64 decoded',
+    arg: plain,
+  }
+end
+
+def base64_urlsafe_encode(query)
+  enc = Base64.urlsafe_encode64(query)
+  {
+    uid: 'base64-urlsafe_encoded',
+    title: enc,
+    subtitle: 'base64 url safe encoded',
+    arg: enc,
+  }
+end
+
+def base64_urlsafe_decode(query)
+  begin
+    plain = Base64.urlsafe_decode64(query)
+    {
+      uid: 'base64-urlsafe_decoded',
+      title: plain,
+      subtitle: 'base64 url safe decoded',
+      arg: plain,
+    }
+  rescue StandardError =&gt; e
+    $stderr.puts "Error base64_urlsafe_decode #{query}: #{e.inspect}"
+    nil
+  end
+end
+
+def html_escape(query)
+  enc = CGI::escapeHTML(query)
+  {
+    uid: 'html-escape',
+    title: enc,
+    subtitle: 'html escaped',
+    arg: enc,
+  }
+end
+
+def html_unescape(query)
+  plain = CGI::unescapeHTML(query)
+  {
+    uid: 'html-unescape',
+    title: plain,
+    subtitle: 'html unescaped',
+    arg: plain,
+  }
+end
+
+
+options = []
+options &lt;&lt; uri_escape(query)
+options &lt;&lt; uri_unescape(query)
+options &lt;&lt; base64_encode(query)
+options &lt;&lt; base64_decode(query)
+options &lt;&lt; base64_urlsafe_encode(query)
+options &lt;&lt; base64_urlsafe_decode(query)
+options &lt;&lt; html_escape(query)
+options &lt;&lt; html_unescape(query)
+
+options.reject! do |opt|
+  opt.nil? ||
+  opt[:title] == query
+end
+
+json_options = options.map do |opt|
+  begin
+    opt[:arg].strip!
+    opt.to_json
+  rescue StandardError =&gt; e
+    $stderr.puts "Error converting #{opt}: #{e.inspect}"
+  end
+end.compact
+
+
+print("{\"items\":[#{json_options.join(',')}]}")
+</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>convert.rb</string>
+				<key>subtext</key>
+				<string>enter text to be converted</string>
+				<key>title</key>
+				<string>encode or decode text</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4EE</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>F028C3B2-BAE6-4323-A0F9-4DB2B170C932</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Uses the built in ruby interpreter to convert text to or from URI, Base64, and HTML escaped entites. 
+
+Icon made by ultimatearm from www.flaticon.com</string>
+	<key>uidata</key>
+	<dict>
+		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4EE</key>
+		<dict>
+			<key>xpos</key>
+			<integer>50</integer>
+			<key>ypos</key>
+			<integer>50</integer>
+		</dict>
+		<key>F028C3B2-BAE6-4323-A0F9-4DB2B170C932</key>
+		<dict>
+			<key>xpos</key>
+			<integer>275</integer>
+			<key>ypos</key>
+			<integer>50</integer>
+		</dict>
+	</dict>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>
