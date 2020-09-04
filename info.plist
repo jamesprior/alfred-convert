@@ -60,7 +60,9 @@
 				<key>runningsubtext</key>
 				<string>Converting</string>
 				<key>script</key>
-				<string>require 'json'
+				<string>#!/usr/bin/env ruby
+
+require 'json'
 require 'cgi'
 require 'base64'
 
@@ -218,7 +220,7 @@ print("{\"items\":[#{json_options.join(',')}]}")
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Uses the built in ruby interpreter to convert text to or from URI, Base64, and HTML escaped entites. 
+	<string>Uses the built in ruby interpreter to convert text to or from URI, Base64, and HTML escaped entites.
 
 Icon made by ultimatearm from www.flaticon.com</string>
 	<key>uidata</key>
@@ -241,7 +243,7 @@ Icon made by ultimatearm from www.flaticon.com</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>1.0.1</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>
